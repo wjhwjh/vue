@@ -43,26 +43,42 @@
         * */
        Vue.component('C', {
            data(){
-               return {}
+               return {
+                 name:"惠子"
+               }
            },
            template:`
            <div>
              这是C组件<br>
              -----------------------------
 
-             <div>{{$attrs}}</div>
+             <div>{{ $attrs.msg }}</div>
 
              <button v-on:click="rewriteListener">把值传给父组件</button>
+
+             -----------------------------
            </div>
         `,
         methods:{
             rewriteListener(){
                console.log('C组件');
-               this.$emit('getClick', '这是传递的数据')
+               this.$emit('getClick', '这是一个实参')
             }
 
+        },
+        beforeCreate(){
+          console.log(this.$attrs);
+          console.log(this.name);
+        },
+        created(){
+          console.log(this.$attrs)
+        },
+        beforeMount(){
+          console.log(this.$attrs)
+        },
+        mounted(){
+          console.log(this.$attrs)
         }
-
        });
        Vue.component('B', {
            data(){
@@ -92,10 +108,29 @@
 
       });
 
+
+
+      Vue.component("List",{
+        data(){
+          return{
+             
+          }
+        },
+        template:`<div>我只是想验证一下props属性的数据加载，再vue周期函数中的执行 <p style="font-weight:bold">{{listMsg}}</p> </div>`,
+        props:["listMsg"],
+        beforeCreate(){
+          console.log(this.listMsg)
+        },
+        created(){
+          console.log(this.listMsg)
+        }
+      })
+
        let App = {
           data(){
             return {
                 msg:'这是一个数据',
+                listMsg:'这是一个数据'
             }
           },
          template:`
@@ -103,6 +138,9 @@
                这是框架组件 <br>
                -----------------------------
                <A :msg="msg" @getClick="getClick"></A>
+
+
+               <List :listMsg="listMsg"></List>
             </div>
          `,
          methods:{
